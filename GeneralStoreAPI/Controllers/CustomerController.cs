@@ -12,14 +12,56 @@ namespace GeneralStoreAPI.Controllers
     {
         private StoreDbContext _context = new StoreDbContext();
 
-        //Post
+        //Post -- Create
+        public IHttpActionResult Post(Customer customer)
+        {
+            // If an empty Customer is passed in
+            if (customer == null)
+            {
+                return BadRequest("Your request body cannot be empty.");
+            }
+            // If the ModelState is not Valid
+            if (ModelState.IsValid) //If model state is valid, we have successfully passed a customer object
+            {
 
-        //Get
+                _context.Customers.Add(customer);
+                _context.SaveChanges();
+                return Ok();
 
-        //Get({id}
+            }
+            return BadRequest(ModelState);
 
-        //Put
+        }
 
-        //Delete{id}
+        //Get -- Read All
+
+        public IHttpActionResult Get()
+        {
+            List<Customer> customers = _context.Customers.ToList();
+            if (customers.Count != 0)
+            {
+                return Ok(customers);
+            }
+            return BadRequest("Your database contains no Customers");
+        }
+
+
+        //Get({id} -- Read by ID
+        public IHttpActionResult Get(int id)
+        {
+            
+            Customer customer = _context.Customers.Find(id);
+            
+            //if id is 0
+            if(customer == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(customer);
+        }
+        //Put -- Update
+
+        //Delete{id} -- Delete by ID
     }
 }
